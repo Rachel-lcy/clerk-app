@@ -23,10 +23,11 @@ const handleSubmit = async (e) => {
 
   try {
     await signUp.create({
-      first_name: firstName,
-      last_name: lastName,
-      email_address: email,
+      firstName,
+      lastName,
+      emailAddress: email,
       password,
+      ...(captchaToken ? { captchaToken } : {}),
     });
 
     // send the email.
@@ -80,6 +81,10 @@ return (
             type='text'
             name='first_name'
             id='first_name'
+            minLength="3"
+            max="50"
+            pattern="^[a-zA-Z0-9]+([._]?[a-zA-Z0-9]+)*$"
+            title="Username must be 3 characters"
             onChange={(e) => setFirstName(e.target.value)}
             className='bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5'
             required={true}
@@ -96,6 +101,9 @@ return (
             type='text'
             name='last_name'
             id='last_name'
+            minLength="3"
+            max="50"
+            pattern="^[a-zA-Z0-9]+([._]?[a-zA-Z0-9]+)*$"
             onChange={(e) => setLastName(e.target.value)}
             className='bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5'
             required={true}
@@ -112,9 +120,10 @@ return (
             type='email'
             name='email'
             id='email'
+            placeholder="hurui.lcy@gmail.com"
+
             onChange={(e) => setEmail(e.target.value)}
             className='bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-blue-600 focus:border-blue-600 block w-full p-2.5'
-            placeholder='name@company.com'
             required={true}
           />
         </div>
@@ -134,12 +143,15 @@ return (
             required={true}
           />
         </div>
+
+        <Captcha />
         <button
           type='submit'
           className='w-full text-white bg-blue-600 hover:bg-blue-700 font-medium rounded-lg text-sm px-5 py-2.5 text-center'
         >
-          Create an account
+          {submitting ? "Creating..." :"Create an account"}
         </button>
+        {error && <p className="text-sm text-red-600">{error}</p>}
       </form>
     )}
     {pendingVerification && (
